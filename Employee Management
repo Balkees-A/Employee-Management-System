@@ -1,0 +1,198 @@
+import java.util.*;
+
+public class EmployeeManagement {
+
+    static class Employee {
+        String Name;
+        int Age;
+        String Designation;
+        String Department;
+        String ManagerName;
+
+        public Employee(String Name, int Age, String Designation, String Department, String ManagerName) {
+            this.Name = Name;
+            this.Age = Age;
+            this.Designation = Designation;
+            this.Department = Department;
+            this.ManagerName = ManagerName;
+        }
+
+        public String getName() {
+            return Name;
+        }
+
+        public int getAge() {
+            return Age;
+        }
+
+        public String getDepartment() {
+            return Department;
+        }
+
+        public String getManagerName() {
+            return ManagerName;
+        }
+
+        @Override
+        public String toString() {
+            return "Name: " + Name +
+                    "\nAge: " + Age +
+                    "\nDepartment: " + Department +
+                    "\nDesignation: " + Designation +
+                    "\nManager Name: " + ManagerName + "\n";
+        }
+    }
+
+    List<Employee> employees;
+    Scanner sc;
+
+    public EmployeeManagement() {
+        employees = new ArrayList<>();
+        sc = new Scanner(System.in);
+    }
+
+    public void addEmployee() {
+        System.out.println("Enter Name: ");
+        String name = sc.nextLine();
+
+        System.out.println("Enter Age: ");
+        int age = sc.nextInt();
+        sc.nextLine();
+
+        System.out.println("Enter Designation: ");
+        String des = sc.nextLine();
+
+        System.out.println("Enter Department: ");
+        String dep = sc.nextLine();
+
+        System.out.println("Enter Manager Name: ");
+        String manager = sc.nextLine();
+
+        Employee e = new Employee(name, age, des, dep, manager);
+        employees.add(e);
+        System.out.println("\nEmployee Added Successfully.");
+    }
+
+    public void searchEmployee() {
+        System.out.println("Enter Employee Name: ");
+        String name = sc.nextLine();
+        boolean found = false;
+        for (Employee e : employees) {
+            if (e.getName().equalsIgnoreCase(name)) {
+                System.out.println(e);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("Employee Not Found");
+        }
+    }
+
+    public void allEmployee() {
+        if (employees.isEmpty()) {
+            System.out.println("No Employees Added Yet.");
+        } else {
+            for (Employee e : employees) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    public void findEmployee() {
+        System.out.println("Enter Manager Name : ");
+        String manager = sc.nextLine();
+
+        System.out.println("Enter Department: ");
+        String department = sc.nextLine();
+        boolean found = false;
+        for (Employee e : employees) {
+            if (e.getManagerName().equalsIgnoreCase(manager) && e.getDepartment().equalsIgnoreCase(department)) {
+                System.out.println(e);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No Employee matches the given Manager and Department.");
+        }
+    }
+
+    public void reportTree() {
+        System.out.println("\nEnter Employee Name to Show Reporting Tree: ");
+        String name = sc.nextLine();
+
+        Employee targetEmployee = null;
+        for (Employee e : employees) {
+            if (e.getName().equalsIgnoreCase(name)) {
+                targetEmployee = e;
+                break;
+            }
+        }
+
+        if (targetEmployee == null) {
+            System.out.println("Employee Not Found");
+            return;
+        }
+
+        System.out.println("\nReport Tree for Employee: " + name);
+        printReportTree(targetEmployee, 0);
+    }
+
+    public void printReportTree(Employee employee, int level) {
+        String indent = "  ".repeat(level);
+        System.out.println(indent + "|_" + employee.getName());
+
+        for (Employee e : employees) {
+            if (e.getManagerName().equalsIgnoreCase(employee.getName())) {
+                printReportTree(e, level + 1);
+            }
+        }
+    }
+
+    public static void main(String args[]) {
+        EmployeeManagement em = new EmployeeManagement();
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter number of employees to add initially: ");
+        int n = sc.nextInt();
+        sc.nextLine();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println("\nEmployee #" + (i + 1));
+            em.addEmployee();
+        }
+
+        while (true) {
+            System.out.println("\n===== Employee Management =====");
+            System.out.println("1. Print All Employees");
+            System.out.println("2. Search Employee by Name");
+            System.out.println("3. Find Employee by Manager & Department");
+            System.out.println("4. Show Reporting Tree");
+            System.out.println("5. Exit");
+
+            System.out.print("Enter Choice: ");
+            int ch = sc.nextInt();
+            sc.nextLine();
+
+            switch (ch) {
+                case 1:
+                    em.allEmployee();
+                    break;
+                case 2:
+                    em.searchEmployee();
+                    break;
+                case 3:
+                    em.findEmployee();
+                    break;
+                case 4:
+                    em.reportTree();
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid Choice. Try Again!");
+                    break;
+            }
+        }
+    }
+}
